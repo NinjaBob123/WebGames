@@ -1,0 +1,56 @@
+body {
+    background-color: black;
+}
+
+html, body {
+    overflow: hidden;
+}
+
+div#main{
+    background-color: #2F2F2F;
+    margin: auto;
+}
+
+div#snakeFrame, div#ground{
+    background-color: rgba(0, 0, 0, 0);
+    width: 100%;
+    height: 100%;
+    display: grid;
+    position: absolute;
+}
+
+div#snakeFrame {
+    z-index: 1;
+}
+
+div#ground {
+    z-index: 0;
+}
+
+#starterButton {
+    margin-left: 40%;
+    margin-right: 40%;
+    width: 20%;
+    font-size: 40px;
+    background-color: limegreen;
+    border-width: 0px;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+.empty {
+    background-color: #2F2F2F;
+    z-index: 0;
+}
+
+.food {
+    background-color: red;
+    z-index: 0;
+}
+
+.snakePart {
+    background-color: limegreen;
+    z-index: 1;
+}
