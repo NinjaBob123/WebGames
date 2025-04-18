@@ -1,4 +1,4 @@
-let frame = null; // Changed const to let
+let frame = null;
 let snakeFrame = null;
 let currentDirection = null;
 let intervalID = null;
@@ -48,6 +48,10 @@ class Snake {
         }
         // Placeholder logic for movement; add actual snake movement logic here.
         console.log(`Snake is moving in the ${cD} direction.`);
+    }
+
+    draw(ground) {
+        
     }
 }
 
