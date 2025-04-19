@@ -11,16 +11,12 @@ div#main{
     margin: auto;
 }
 
-div#snakeFrame, div#ground{
+div#ground{
     background-color: rgba(0, 0, 0, 0);
     width: 100%;
     height: 100%;
     display: grid;
     position: absolute;
-}
-
-div#snakeFrame {
-    z-index: 1;
 }
 
 div#ground {

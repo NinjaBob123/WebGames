@@ -1,17 +1,18 @@
 let frame = null;
-let snakeFrame = null;
 let currentDirection = null;
 let intervalID = null;
 
 class Snake {
     // TODO: Change the constructor to take snakeFrame as a parameter and find the positions from it
-    constructor(length, positions) {
+    constructor(length, board) {
         this.length = length;
-        this.positions = positions
         this.alive = true;
         let tempTiles = frame.children;
         let n = Math.sqrt(tempTiles.length);
         this.tiles = new Array(n);
+        this.board = board;
+        this.positions = new Array(this.length);
+
         for (let i = 0; i < n; i++){
             this.tiles[i] = new Array(n);
         }
@@ -23,6 +24,7 @@ class Snake {
     }
     
     move(cD) {
+        this.positions.length = this.length;
         switch (cD) {
             case "up":
                 this.positions[0][1] + 1
@@ -48,10 +50,6 @@ class Snake {
         }
         // Placeholder logic for movement; add actual snake movement logic here.
         console.log(`Snake is moving in the ${cD} direction.`);
-    }
-
-    draw(ground) {
-        
     }
 }
 
@@ -96,9 +94,8 @@ function generateBoard(frameDim) {
             cell.style.margin = "0px";
             cell.style.width = "10px";
             cell.style.height = "10px";
-            // TODO: Change board generation so that the food is behind the snake on the z axis, and the snake is on its own layer
             if (x === Math.floor(cellList.length / 2) && y === Math.floor(cellList.length / 2)) {
-                cell.className = "empty";
+                cell.className = "snakePart";
             } else if (Math.random() < 0.01) {
                 cell.className = "food";
             } else {
@@ -117,8 +114,6 @@ function init() {
     contFrame.id = "main";
     frame = document.createElement("div");
     frame.id = "ground";
-    snakeFrame = document.createElement("div");
-    snakeFrame.id = "snakeFrame";
     const frameDim = Math.floor(Math.min(window.innerWidth, window.innerHeight) / 10) * 10;
     contFrame.style.width = frameDim.toString() + "px";
     contFrame.style.height = frameDim.toString() + "px";
