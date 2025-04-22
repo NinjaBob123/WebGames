@@ -4,7 +4,7 @@ let intervalID = null;
 
 class Snake {
     // TODO: Change the constructor to take snakeFrame as a parameter and find the positions from it
-    constructor(length, board) {
+    constructor(length, board, classList) {
         this.length = length;
         this.alive = true;
         let tempTiles = frame.children;
@@ -12,6 +12,7 @@ class Snake {
         this.tiles = new Array(n);
         this.board = board;
         this.positions = new Array(this.length);
+        this.classList = classList;
 
         for (let i = 0; i < n; i++){
             this.tiles[i] = new Array(n);
@@ -25,28 +26,36 @@ class Snake {
     
     move(cD) {
         this.positions.length = this.length;
-        switch (cD) {
-            case "up":
-                this.positions[0][1] + 1
-                this.positions[0][1] = this.positions[0][1] + 1;
-                break;
-            case "down":
-                this.positions[0][1] = this.positions[0][1] - 1;
-                break;
-            case "left":
-                this.positions[0][0] = this.positions[0][0] - 1;
-                break;
-            case "right":
-                this.positions[0][0] = this.positions[0][0] + 1;
-                break;
-        }
+        let nameHold = null;
+
         for (let x=1; x < this.positions.length; x++) {
             if (this.positions[0][0] === this.positions[this.positions.length - x][0] &&
                 this.positions[0][1] === this.positions[this.positions.length - x][1]) {
                     this.alive = false;
                     break;
-                }
-            this.positions[this.positions.length - x] = this.positions[this.positions.length - (1 + x)]
+            }
+            if (x == this.positions.length - 1) {
+                this.classList[this.positions[this.positions.length - x][0]][this.positions[this.positions.length - x][1]] = nameHold;
+            }
+            this.positions[this.positions.length - x] = this.positions[this.positions.length - (1 + x)];
+        }
+        switch (cD) {
+            case "up":
+                this.positions[0][1] = this.positions[0][1] + 1;
+                nameHold = this.classList[this.positions[0][0]][this.positions[0][1]];
+                break;
+            case "down":
+                this.positions[0][1] = this.positions[0][1] - 1;
+                nameHold = this.classList[this.positions[0][0]][this.positions[0][1]];
+                break;
+            case "left":
+                this.positions[0][0] = this.positions[0][0] - 1;
+                nameHold = this.classList[this.positions[0][0]][this.positions[0][1]];
+                break;
+            case "right":
+                this.positions[0][0] = this.positions[0][0] + 1;
+                nameHold = this.classList[this.positions[0][0]][this.positions[0][1]];
+                break;
         }
         // Placeholder logic for movement; add actual snake movement logic here.
         console.log(`Snake is moving in the ${cD} direction.`);
@@ -87,6 +96,7 @@ function generateBoard(frameDim) {
     let cellList = Array.from({ length: frameDim / 10 }, () =>
         new Array(frameDim / 10).fill(null)
     );
+    let classList = cellList;
 
     for (let x = 0; x < cellList.length; x++) {
         for (let y = 0; y < cellList[x].length; y++) {
@@ -103,6 +113,7 @@ function generateBoard(frameDim) {
             }
 
             cellList[x][y] = cell;
+            classList[x][y] = cell.className;
             frame.appendChild(cell);
         }
     }
