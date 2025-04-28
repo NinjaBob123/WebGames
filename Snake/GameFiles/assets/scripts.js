@@ -1,25 +1,33 @@
 let frame = null;
 let currentDirection = null;
 let intervalID = null;
+let cD = null;
 
 class Snake {
     // TODO: Change the constructor to take snakeFrame as a parameter and find the positions from it
-    constructor(length, board, classList) {
+    constructor(length, board) {
         this.length = length;
         this.alive = true;
-        let tempTiles = frame.children;
-        let n = Math.sqrt(tempTiles.length);
-        this.tiles = new Array(n);
-        this.board = board;
+        this.board = board[0];
         this.positions = new Array(this.length);
-        this.classList = classList;
-
-        for (let i = 0; i < n; i++){
-            this.tiles[i] = new Array(n);
+        for (let n = 0; n < this.positions.length; n++) {
+            this.positions[n] = new Array(2);
         }
-        for (let x = 0; x < n; x++) {
-            for (let y = 0; y < n; y++) {
-                this.tiles[x][y] = tempTiles[x * n + y];
+
+        this.classList = Array.from({ length: this.board.length }, () =>
+            new Array(this.board.length).fill(null))
+        for (let x = 0; x < this.classList.length; x++) {
+            for (let y = 0; y < this.classList[x].length; y++) {
+                this.classList[x][y] = this.board[x][y].className;
+            }
+        }
+        let count = 0;
+        for (let x = 0; x < this.board.length; x++) {
+            for (let y = 0; y < x.length; y++) {
+                if (this.board[x][y].className == "snakePart") {
+                    this.positions[count] = [x, y];
+                    count += 1;
+                }
             }
         }
     }
@@ -27,19 +35,24 @@ class Snake {
     move(cD) {
         this.positions.length = this.length;
         let nameHold = null;
-
+        let posHold = null;
         for (let x=1; x < this.positions.length; x++) {
+            if (x == this.positions.length - 1) {
+                posHold = this.positions[x]
+            }
             if (this.positions[0][0] === this.positions[this.positions.length - x][0] &&
                 this.positions[0][1] === this.positions[this.positions.length - x][1]) {
                     this.alive = false;
                     break;
             }
-            if (x == this.positions.length - 1) {
+            /**if (x == this.positions.length - 1) {
                 this.classList[this.positions[this.positions.length - x][0]][this.positions[this.positions.length - x][1]] = nameHold;
-            }
+            } **/
             this.positions[this.positions.length - x] = this.positions[this.positions.length - (1 + x)];
         }
         switch (cD) {
+            case null:
+                break;
             case "up":
                 this.positions[0][1] = this.positions[0][1] + 1;
                 nameHold = this.classList[this.positions[0][0]][this.positions[0][1]];
@@ -58,6 +71,18 @@ class Snake {
                 break;
         }
         // Placeholder logic for movement; add actual snake movement logic here.
+        if (cD != null) {
+            for (let x = 0; x < this.board.length; x++) {
+                for (let y = 0; y < x.lenth; y++) {
+                    if (x == posHold[0] && y == posHold[1]) {
+                        this.board[posHold[0]][posHold[1]].className = nameHold;
+                    }
+                    else {
+                        this.board[x][y].className = this.classList[x][y];
+                    }
+                }
+            }
+        }
         console.log(`Snake is moving in the ${cD} direction.`);
     }
 }
@@ -73,8 +98,9 @@ function resizeBoard() {
 }
 
 function changeDir(event) {
+    console.log("Changing direction...")
     const key = event.key;
-    let newDirection = currentDirection;
+    let newDirection = cD;
     switch (key) {
         case "ArrowUp":
             if (currentDirection !== "down") newDirection = "up";
@@ -89,7 +115,8 @@ function changeDir(event) {
             if (currentDirection !== "left") newDirection = "right";
             break;
     }
-    currentDirection = newDirection;
+    cD = newDirection;
+    console.log(`Changed direction to ${cD}.`)
 }
 
 function generateBoard(frameDim) {
@@ -117,7 +144,7 @@ function generateBoard(frameDim) {
             frame.appendChild(cell);
         }
     }
-    return cellList;
+    return [cellList, classList];
 }
 
 function init() {
@@ -131,16 +158,15 @@ function init() {
     frame.style.gridTemplateColumns = `repeat(${frameDim / 10}, 10px)`;
     frame.style.gridTemplateRows = `repeat(${frameDim / 10}, 10px)`;
     contFrame.appendChild(frame);
-    contFrame.appendChild(snakeFrame);
     document.body.appendChild(contFrame);
 
     let board = generateBoard(frameDim);
     document.getElementById("starterButton").remove();
-
+    let snake = new Snake(1, board)
+    window.addEventListener("keydown", changeDir);
     intervalID = setInterval(() => {
-        board = move(currentDirection, board);
+        snake.move(cD)
     }, 425);
 }
 
 // Event listeners
-window.addEventListener("keydown", changeDir);
